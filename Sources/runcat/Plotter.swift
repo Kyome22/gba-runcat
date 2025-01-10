@@ -39,10 +39,12 @@ struct Plotter {
         }
     }
 
-    func draw(colors: [Color], size: Size) {
+    func draw(colors: [Color?], size: Size) {
         (.zero ..< size.height).forEach { y in
             (.zero ..< size.width).forEach { x in
-                vram.advanced(by: y * screenSize.width + x).pointee = colors[y * size.width + x].to16Bit()
+                if let color = colors[y * size.width + x] {
+                    vram.advanced(by: y * screenSize.width + x).pointee = color.to16Bit()
+                }
             }
         }
     }
