@@ -27,11 +27,11 @@ struct Plotter {
     }
 
     func draw(color: Color, point: Point, size: Size) {
-        let startX = max(point.x, .zero)
-        let startY = max(point.y, .zero)
-        let endX = min(point.x + size.width, screenSize.width)
-        let endY = min(point.y + size.height, screenSize.height)
-        guard startX < endX && startY < endY else { return }
+        guard size.width >= .zero && size.height >= .zero else { return }
+        let startX = min(max(point.x, .zero), screenSize.width)
+        let startY = min(max(point.y, .zero), screenSize.height)
+        let endX = min(max(point.x + size.width, .zero), screenSize.width)
+        let endY = min(max(point.y + size.height, .zero), screenSize.height)
         let color16 = color.to16Bit()
         (startY ..< endY).forEach { y in
             vram.advanced(by: y * screenSize.width + startX)
@@ -39,13 +39,25 @@ struct Plotter {
         }
     }
 
-    func draw(colors: [Color?], size: Size) {
-        (.zero ..< size.height).forEach { y in
-            (.zero ..< size.width).forEach { x in
-                if let color = colors[y * size.width + x] {
-                    vram.advanced(by: y * screenSize.width + x).pointee = color.to16Bit()
-                }
-            }
+    func draw(colors: [Color], point: Point, size: Size) {
+        guard size.width >= .zero && size.height >= .zero else { return }
+
+        let startX = min(max(point.x, .zero), screenSize.width)
+        let startY = min(max(point.y, .zero), screenSize.height)
+        let endX = min(max(point.x + size.width, .zero), screenSize.width)
+        let endY = min(max(point.y + size.height, .zero), screenSize.height)
+
+        let offsetX = max(-point.x, .zero)
+        let offsetY = max(-point.y, .zero)
+
+        let rangeX = endX - startX
+        let rangeY = endY - startY
+
+        (0 ..< rangeY).forEach { y in
+            let anchor = (y + offsetY) * size.width + offsetX
+            var values = colors[anchor ..< anchor + rangeX].map { $0.to16Bit() }
+            vram.advanced(by: (y + startY) * screenSize.width + startX)
+                .update(from: &values, count: rangeX)
         }
     }
 }
