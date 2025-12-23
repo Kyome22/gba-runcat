@@ -1,21 +1,21 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2
 
 import PackageDescription
 
 let package = Package(
-    name: "runcat",
+    name: "RunCat",
     platforms: [
-        .macOS(.v14)
+        .macOS(.v15),
     ],
     products: [
         .library(
-            name: "runcat",
-            targets: ["runcat"]
+            name: "RunCat",
+            targets: ["RunCat"]
         ),
     ],
     targets: [
         .target(
-            name: "runcat",
+            name: "RunCat",
             swiftSettings: [
                 .enableExperimentalFeature("Embedded"),
             ]
