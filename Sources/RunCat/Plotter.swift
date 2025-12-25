@@ -1,4 +1,7 @@
+import _Volatile
+
 struct Plotter {
+    private var vcount = VolatileMappedRegister<UInt16>(unsafeBitPattern: 0x4000006)
     private var screenSize = Size.screen
 
     init() {}
@@ -8,15 +11,10 @@ struct Plotter {
         displayControl.pointee = (mode & 0x0007) | (flags & 0xfff8)
     }
 
-    @inline(never)
-    private func vcount() -> UInt16 {
-        UnsafeMutablePointer<UInt16>(bitPattern: 0x4000006)!.pointee
-    }
-
     func waitForVSync() {
         let threshold = UInt16(screenSize.height)
-        while vcount() >= threshold {}
-        while vcount() < threshold {}
+        while vcount.load() >= threshold {}
+        while vcount.load() < threshold {}
     }
 
     @inline(never)

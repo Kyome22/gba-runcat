@@ -24,7 +24,7 @@ let package = Package(
         .target(
             name: "RunCat",
             swiftSettings: [
-                .enableExperimentalFeature("Embedded"),
+                .enableExperimentalFeature("Volatile"),
             ]
         ),
         .executableTarget(
