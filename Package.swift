@@ -12,6 +12,13 @@ let package = Package(
             name: "RunCat",
             targets: ["RunCat"]
         ),
+        .executable(
+            name: "ic",
+            targets: ["ImageConverter"]
+        )
+    ],
+    dependencies: [
+        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.7.0"),
     ],
     targets: [
         .target(
@@ -20,5 +27,17 @@ let package = Package(
                 .enableExperimentalFeature("Embedded"),
             ]
         ),
+        .executableTarget(
+            name: "ImageConverter",
+            dependencies: [
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+            ],
+            resources: [
+                .process("Resources"),
+            ],
+            swiftSettings: [
+                .enableUpcomingFeature("ExistentialAny"),
+            ]
+        )
     ]
 )
