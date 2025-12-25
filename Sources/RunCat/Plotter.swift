@@ -1,5 +1,6 @@
 struct Plotter {
     private var vram = UnsafeMutablePointer<UInt16>(bitPattern: 0x6000000)!
+    private var vcount = UnsafeMutablePointer<UInt16>(bitPattern: 0x4000006)!
     private var screenSize = Size.screen
 
     init() {}
@@ -11,8 +12,8 @@ struct Plotter {
 
     func waitForVSync() {
         let threshold = UInt16(screenSize.height)
-        while UnsafeMutablePointer<UInt16>(bitPattern: 0x4000006)!.pointee >= threshold {}
-        while UnsafeMutablePointer<UInt16>(bitPattern: 0x4000006)!.pointee < threshold {}
+        while vcount.pointee >= threshold {}
+        while vcount.pointee < threshold {}
     }
 
     func cover(color: Color) {
@@ -35,7 +36,8 @@ struct Plotter {
         let color16 = color.to16Bit()
         (startY ..< endY).forEach { y in
             vram.advanced(by: y * screenSize.width + startX)
-                .initialize(repeating: color16, count: endX - startX)
+                .update(repeating: color16, count: endX - startX)
+            // .initialize(repeating: color16, count: endX - startX)
         }
     }
 
