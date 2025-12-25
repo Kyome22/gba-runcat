@@ -1,6 +1,4 @@
 struct Plotter {
-    private var vram = UnsafeMutablePointer<UInt16>(bitPattern: 0x6000000)!
-    private var vcount = UnsafeMutablePointer<UInt16>(bitPattern: 0x4000006)!
     private var screenSize = Size.screen
 
     init() {}
@@ -10,20 +8,30 @@ struct Plotter {
         displayControl.pointee = (mode & 0x0007) | (flags & 0xfff8)
     }
 
+    @inline(never)
+    private func vcount() -> UInt16 {
+        UnsafeMutablePointer<UInt16>(bitPattern: 0x4000006)!.pointee
+    }
+
     func waitForVSync() {
         let threshold = UInt16(screenSize.height)
-        while vcount.pointee >= threshold {}
-        while vcount.pointee < threshold {}
+        while vcount() >= threshold {}
+        while vcount() < threshold {}
+    }
+
+    @inline(never)
+    private func vram() -> UnsafeMutablePointer<UInt16> {
+        UnsafeMutablePointer<UInt16>(bitPattern: 0x6000000)!
     }
 
     func cover(color: Color) {
         let color16 = color.to16Bit()
-        vram.update(repeating: color16, count: screenSize.width * screenSize.height)
+        vram().update(repeating: color16, count: screenSize.width * screenSize.height)
     }
 
     func plot(color: Color, point: Point) {
         if (.zero ..< screenSize.width).contains(point.x) && (.zero ..< screenSize.height).contains(point.y) {
-            vram.advanced(by: point.y * screenSize.width + point.x).pointee = color.to16Bit()
+            vram().advanced(by: point.y * screenSize.width + point.x).pointee = color.to16Bit()
         }
     }
 
@@ -35,7 +43,7 @@ struct Plotter {
         let endY = min(max(point.y + size.height, .zero), screenSize.height)
         let color16 = color.to16Bit()
         (startY ..< endY).forEach { y in
-            vram.advanced(by: y * screenSize.width + startX)
+            vram().advanced(by: y * screenSize.width + startX)
                 .update(repeating: color16, count: endX - startX)
             // .initialize(repeating: color16, count: endX - startX)
         }
@@ -58,7 +66,7 @@ struct Plotter {
         (0 ..< rangeY).forEach { y in
             let anchor = (y + offsetY) * size.width + offsetX
             var values = colors[anchor ..< anchor + rangeX].map { $0.to16Bit() }
-            vram.advanced(by: (y + startY) * screenSize.width + startX)
+            vram().advanced(by: (y + startY) * screenSize.width + startX)
                 .update(from: &values, count: rangeX)
         }
     }

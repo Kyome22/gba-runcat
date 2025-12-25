@@ -4,8 +4,10 @@ endif
 
 NAME = RunCat
 BIN = $(GBA_LLVM_PATH)/bin
+SWIFT_FILES = $(wildcard Sources/$(NAME)/*.swift)
 SWIFT_FLAGS = -wmo \
 	-enable-experimental-feature Embedded \
+	-enable-experimental-feature Volatile \
 	-target armv4t-none-none-eabi \
 	-parse-as-library \
 	-Xfrontend -internalize-at-link \
@@ -31,8 +33,7 @@ $(NAME).gba: $(NAME).elf
 	$(BIN)/llvm-objcopy -O binary $^ $@
 	$(BIN)/gbafix $@
 
-# elfファイルを生成
-$(NAME).elf: $(wildcard Sources/$(NAME)/*.swift)
+$(NAME).elf: $(SWIFT_FILES)
 	swiftc -o $@ $(SWIFT_FILES) \
 		$(SWIFT_FLAGS) \
 		$(addprefix -Xcc ,$(CFLAGS)) \
