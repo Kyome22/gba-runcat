@@ -2,7 +2,7 @@ import CoreGraphics
 
 struct ImageConverter {
     func run() throws {
-        let image = Cat.running(.frame4).image
+        let image = Cat.running(.frame0).image
         guard let (colors, width, height) = colorMap(from: image, scale: 0.4) else {
             return
         }
