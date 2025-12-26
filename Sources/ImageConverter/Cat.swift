@@ -1,10 +1,11 @@
-import AppKit
+import CoreGraphics
+import Foundation
 
 enum Cat {
     case running(RunningCat)
     case jumping(JumpingCat)
 
-    var image: NSImage {
+    var image: CGImage {
         switch self {
         case let .running(value): value.image
         case let .jumping(value): value.image
@@ -20,8 +21,8 @@ extension Cat {
         case frame3
         case frame4
 
-        var image: NSImage {
-            NSImage(resource: .init(name: "cat-running-\(rawValue)", bundle: .module))
+        var image: CGImage {
+            CGImage.create(name: "cat-running-\(rawValue)", bundle: .module)!
         }
     }
 }
@@ -39,8 +40,8 @@ extension Cat {
         case frame8
         case frame9
 
-        var image: NSImage {
-            NSImage(resource: .init(name: "cat-jmping-\(rawValue)", bundle: .module))
+        var image: CGImage {
+            CGImage.create(name: "cat-jamping-\(rawValue)", bundle: .module)!
         }
     }
 }

@@ -1,4 +1,5 @@
-import AppKit
+import CoreGraphics
+import Foundation
 
 enum Road: String, CaseIterable {
     case flat
@@ -6,7 +7,7 @@ enum Road: String, CaseIterable {
     case crater
     case sprout
 
-    var image: NSImage {
-        NSImage(resource: .init(name: "road-\(rawValue)", bundle: .module))
+    var image: CGImage {
+        CGImage.create(name: "road-\(rawValue)", bundle: .module)!
     }
 }
