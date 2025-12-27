@@ -46,7 +46,34 @@ struct ImageConverter {
                 print("[\n\(content)\n]")
             }
         case .road:
-            return
+            let tileData = Road.allCases.map { road in
+                let image = road.image
+                let colors = convertToColors(from: image)
+                return convertToTileData(from: colors, width: image.width, height: image.height)
+            }
+            let total = tileData.count
+            let chunk = Road.sprout.image.width / 8
+            let tileDataSets = convertToTileDataSets(from: tileData, chunk: chunk)
+            switch format {
+            case .map:
+                let content = (0 ..< total).map { number in
+                    let positionWithIndexList = convertToPositionWithIndexList(from: tileDataSets, number: number)
+                    return positionWithIndexList.chunked(by: chunk).map { value in
+                        let str = value.map {
+                            String(format: "%-2d", $0.index).replacingOccurrences(of: " ", with: "_")
+                        }.joined(separator: ", ")
+                        return "    \(str),"
+                    }.joined(separator: "\n")
+                }.joined(separator: "\n],\n[\n")
+                print("[\n\(content)\n]")
+            case .data:
+                let content = tileDataSets.map { tileDataSet in
+                    tileDataSet.data.map { value in
+                        String(format: "    0x%08X,", value)
+                    }.joined(separator: "\n")
+                }.joined(separator: "\n\n")
+                print("[\n\(content)\n]")
+            }
         }
     }
 
