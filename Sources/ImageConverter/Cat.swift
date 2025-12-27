@@ -1,7 +1,7 @@
 import CoreGraphics
 import Foundation
 
-enum Cat {
+enum Cat: CaseIterable {
     case running(RunningCat)
     case jumping(JumpingCat)
 
@@ -11,6 +11,10 @@ enum Cat {
         case let .jumping(value): value.image
         }
     }
+
+    static let allCases: [Cat] = {
+        RunningCat.allCases.map { Cat.running($0) } + JumpingCat.allCases.map { Cat.jumping($0) }
+    }()
 }
 
 extension Cat {
@@ -41,7 +45,7 @@ extension Cat {
         case frame9
 
         var image: CGImage {
-            CGImage.create(name: "cat-jamping-\(rawValue)", bundle: .module)!
+            CGImage.create(name: "cat-jumping-\(rawValue)", bundle: .module)!
         }
     }
 }

@@ -1,3 +1,10 @@
+enum SpriteSize: UInt16 {
+    case size8x8 = 0x0000
+    case size16x16 = 0x4000
+    case size32x32 = 0x8000
+    case size64x64 = 0xC000
+}
+
 struct ObjectAttribute {
     var attr0: UInt16
     var attr1: UInt16
@@ -11,10 +18,10 @@ struct ObjectAttribute {
         self.attr3 = attr3
     }
 
-    init(x: UInt16, y: UInt16, charNumber: UInt16, paletteNumber: UInt16) {
-        self.attr0 = y & 0x00ff
-        self.attr1 = x & 0x01ff
-        self.attr2 = (charNumber & 0x03ff) | (paletteNumber << 12)
+    init(x: UInt16, y: UInt16, charNumber: UInt16, paletteNumber: UInt16, size: SpriteSize = .size8x8) {
+        self.attr0 = (y & 0x00FF) | 0x0000
+        self.attr1 = (x & 0x01FF) | size.rawValue
+        self.attr2 = (charNumber & 0x03FF) | (paletteNumber << 12)
         self.attr3 = 0
     }
 
