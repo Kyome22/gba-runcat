@@ -11,16 +11,11 @@ struct ObjectAttribute {
         self.attr3 = attr3
     }
 
-    init(x: UInt16, y: UInt16, charNo: UInt16, paletteNo: UInt16) {
+    init(x: UInt16, y: UInt16, charNumber: UInt16, paletteNumber: UInt16) {
         self.attr0 = y & 0x00ff
         self.attr1 = x & 0x01ff
-        self.attr2 = (charNo & 0x03ff) | (paletteNo << 12)
+        self.attr2 = (charNumber & 0x03ff) | (paletteNumber << 12)
         self.attr3 = 0
-    }
-
-    var y: UInt16 {
-        get { attr0 & 0x00ff }
-        set { attr0 = (attr0 & 0xff00) | (newValue & 0x00ff) }
     }
 
     var x: UInt16 {
@@ -28,12 +23,17 @@ struct ObjectAttribute {
         set { attr1 = (attr1 & 0xfe00) | (newValue & 0x01ff) }
     }
 
-    var charNo: UInt16 {
+    var y: UInt16 {
+        get { attr0 & 0x00ff }
+        set { attr0 = (attr0 & 0xff00) | (newValue & 0x00ff) }
+    }
+
+    var charNumber: UInt16 {
         get { attr2 & 0x03ff }
         set { attr2 = (attr2 & 0xfc00) | (newValue & 0x03ff) }
     }
 
-    var paletteNo: UInt16 {
+    var paletteNumber: UInt16 {
         get { attr2 >> 12 }
         set { attr2 = (attr2 & 0x0fff) | (newValue << 12) }
     }
