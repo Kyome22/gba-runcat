@@ -21,7 +21,7 @@ struct Color {
         self.blue = 31 - min(black, 31)
     }
 
-    func to16Bit() -> UInt16 {
+    func asUInt16() -> UInt16 {
         (UInt16(red) & 0x1F) | (UInt16(green) & 0x1F) << 5 | (UInt16(blue) & 0x1F) << 10
     }
 }
