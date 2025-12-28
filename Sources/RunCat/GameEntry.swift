@@ -1,44 +1,17 @@
 @main
-struct EntryPoint {
+struct GameEntry {
     static func main() {
         var n = UInt8.zero
         var m = UInt8.zero
         let renderer = Renderer()
+        let spriteBuilder = SpriteBuilder()
         var timer = Timer(milliseconds: 100)
-        let screenSize = Size.screen
-        let catSize = Size.cat
 
-        renderer.set(backgroundTiles: Background.tileData)
+        renderer.set(backgroundTiles: spriteBuilder.backgroundTileData)
+        renderer.set(objectTiles: spriteBuilder.objectTileData)
 
-        let tileData = Cat.tileData + Road.tileData
-        renderer.set(objectTiles: tileData)
-
-        let catTileTotal = Int(Cat.tileWidth * Cat.tileHeight)
-        let originX = (screenSize.width - catSize.width) / 2
-        let originY = (screenSize.height - catSize.height) / 2
-        var sprites: [ObjectAttribute] = (0 ..< catTileTotal).map { index in
-            let characterNumber = Cat.tileMap[Int(n)][index]
-            return ObjectAttribute(
-                x: originX + 8 * (UInt16(index) % Cat.tileWidth),
-                y: originY + 8 * (UInt16(index) / Cat.tileWidth),
-                characterNumber: characterNumber,
-                paletteNumber: 0
-            )
-        }
-
-        let offset = UInt16(Cat.tileData.count / 8)
-        let roadTileMap = Road.tileMap.map { $0.map { value in value + offset } }
-        let roadTileTotal = Int(Road.tileWidth * Road.tileHeight)
-        sprites += (0 ..< roadTileTotal).map { index in
-            let characterNumber = roadTileMap[Int(m)][index]
-            return ObjectAttribute(
-                x: 8 * (UInt16(index) % Road.tileWidth),
-                y: 8 * (UInt16(index) / Road.tileWidth),
-                characterNumber: characterNumber,
-                paletteNumber: 0
-            )
-        }
-
+        var sprites: [ObjectAttribute] = spriteBuilder.initialCatSprites()
+        sprites.append(contentsOf: spriteBuilder.initialRoadSprites())
         renderer.update(sprites: sprites)
 
         while true {
@@ -46,14 +19,15 @@ struct EntryPoint {
 
             if timer.hasElapsed() {
                 n = (n + 1) % 15
-                (0 ..< catTileTotal).forEach { index in
-                    sprites[index].characterNumber = Cat.tileMap[Int(n)][index]
+                spriteBuilder.enumeratedCatTileMap(of: n).forEach { index, characterNumber in
+                    sprites[index].characterNumber = characterNumber
                 }
 
                 m = (m + 1) % 4
-                (0 ..< roadTileTotal).forEach { index in
-                    sprites[catTileTotal + index].characterNumber = roadTileMap[Int(m)][index]
+                spriteBuilder.enumeratedRoadTileMap(of: m).forEach { index, characterNumber in
+                    sprites[index].characterNumber = characterNumber
                 }
+
                 renderer.update(sprites: sprites)
             }
         }

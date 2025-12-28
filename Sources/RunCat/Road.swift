@@ -1,6 +1,7 @@
 enum Road {
-    static let tileWidth: UInt16 = 2
-    static let tileHeight: UInt16 = 4
+    static let tileSize = Size(width: 2, height: 4)
+
+    static let origin = Point(x: 0, y: 88)
 
     static let tileMap: [[UInt16]] = [
         [

@@ -1,6 +1,7 @@
 enum Cat {
-    static let tileWidth: UInt16 = 8
-    static let tileHeight: UInt16 = 6
+    static let tileSize = Size(width: 8, height: 6)
+
+    static let origin = Point(x: 32, y: 64)
 
     static let tileMap: [[UInt16]] = [
         [

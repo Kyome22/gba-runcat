@@ -1,7 +1,7 @@
 import _Volatile
 
 struct Renderer {
-    private var screenSize = Size.screen
+    private var screenSize = Size(width: 240, height: 160)
     private var verticalCount = VolatileMappedRegister<UInt16>(unsafeBitPattern: 0x4000006)
 
     init() {
