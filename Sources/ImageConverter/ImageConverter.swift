@@ -22,28 +22,13 @@ struct ImageConverter {
                 let colors = convertToColors(from: image)
                 return convertToTileData(from: colors, width: image.width, height: image.height)
             }
-            let total = tileData.count
             let chunk = Cat.RunningCat.frame0.image.width / 8
             let tileDataSets = convertToTileDataSets(from: tileData, chunk: chunk)
             switch format {
             case .map:
-                let content = (0 ..< total).map { number in
-                    let positionWithIndexList = convertToPositionWithIndexList(from: tileDataSets, number: number)
-                    return positionWithIndexList.chunked(by: chunk).map { value in
-                        let str = value.map {
-                            String(format: "%-3d", $0.index).replacingOccurrences(of: " ", with: "_")
-                        }.joined(separator: ", ")
-                        return "    \(str),"
-                    }.joined(separator: "\n")
-                }.joined(separator: "\n],\n[\n")
-                print("[\n\(content)\n]")
+                printMap(total: tileData.count, chunk: chunk, tileDataSets: tileDataSets, digit: 3)
             case .data:
-                let content = tileDataSets.map { tileDataSet in
-                    tileDataSet.data.map { value in
-                        String(format: "    0x%08X,", value)
-                    }.joined(separator: "\n")
-                }.joined(separator: "\n\n")
-                print("[\n\(content)\n]")
+                printData(tileDataSets: tileDataSets)
             }
         case .road:
             let tileData = Road.allCases.map { road in
@@ -51,28 +36,13 @@ struct ImageConverter {
                 let colors = convertToColors(from: image)
                 return convertToTileData(from: colors, width: image.width, height: image.height)
             }
-            let total = tileData.count
             let chunk = Road.sprout.image.width / 8
             let tileDataSets = convertToTileDataSets(from: tileData, chunk: chunk)
             switch format {
             case .map:
-                let content = (0 ..< total).map { number in
-                    let positionWithIndexList = convertToPositionWithIndexList(from: tileDataSets, number: number)
-                    return positionWithIndexList.chunked(by: chunk).map { value in
-                        let str = value.map {
-                            String(format: "%-2d", $0.index).replacingOccurrences(of: " ", with: "_")
-                        }.joined(separator: ", ")
-                        return "    \(str),"
-                    }.joined(separator: "\n")
-                }.joined(separator: "\n],\n[\n")
-                print("[\n\(content)\n]")
+                printMap(total: tileData.count, chunk: chunk, tileDataSets: tileDataSets, digit: 2)
             case .data:
-                let content = tileDataSets.map { tileDataSet in
-                    tileDataSet.data.map { value in
-                        String(format: "    0x%08X,", value)
-                    }.joined(separator: "\n")
-                }.joined(separator: "\n\n")
-                print("[\n\(content)\n]")
+                printData(tileDataSets: tileDataSets)
             }
         }
     }
@@ -181,6 +151,28 @@ struct ImageConverter {
             .sorted { a, b in
                 a.position.y < b.position.y
             }
+    }
+
+    private func printMap(total: Int, chunk: Int, tileDataSets: [TileDataSet], digit: Int) {
+        let content = (0 ..< total).map { number in
+            let positionWithIndexList = convertToPositionWithIndexList(from: tileDataSets, number: number)
+            return positionWithIndexList.chunked(by: chunk).map { value in
+                let str = value.map {
+                    String(format: "%-\(digit)d", $0.index).replacingOccurrences(of: " ", with: "_")
+                }.joined(separator: ", ")
+                return "    \(str),"
+            }.joined(separator: "\n")
+        }.joined(separator: "\n],\n[\n")
+        print("[\n\(content)\n]")
+    }
+
+    private func printData(tileDataSets: [TileDataSet]) {
+        let content = tileDataSets.map { tileDataSet in
+            tileDataSet.data.map { value in
+                String(format: "    0x%08X,", value)
+            }.joined(separator: "\n")
+        }.joined(separator: "\n\n")
+        print("[\n\(content)\n]")
     }
 }
 

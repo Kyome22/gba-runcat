@@ -1,5 +1,5 @@
 enum Color: Int {
-    case c0
+    case c0 // transparent
     case c1
     case c2
     case c3

@@ -8,7 +8,7 @@ struct EntryPoint {
         let screenSize = Size.screen
         let catSize = Size.cat
 
-//        renderer.set(backgroundTiles: Array(repeating: 0, count: 8))
+        renderer.set(backgroundTiles: Background.tileData)
 
         let tileData = Cat.tileData + Road.tileData
         renderer.set(objectTiles: tileData)

@@ -1,27 +1,22 @@
-struct Color {
-    var red: UInt8   // 0-31
-    var green: UInt8 // 0-31
-    var blue: UInt8  // 0-31
+enum Color: UInt16 {
+    case background = 0x6318
+    case gray1 = 0x56B5
+    case gray2 = 0x4A52
+    case gray3 = 0x3DEF
+    case gray4 = 0x318C
+    case gray5 = 0x2529
+    case gray6 = 0x18C6
+    case gray7 = 0x0C63
+    case gray8 = 0x0000
 
-    init(red: UInt8, green: UInt8, blue: UInt8) {
-        self.red = min(red, 31)
-        self.green = min(green, 31)
-        self.blue = min(blue, 31)
-    }
-
-    init(white: UInt8) {
-        self.red = min(white, 31)
-        self.green = min(white, 31)
-        self.blue = min(white, 31)
-    }
-
-    init(black: UInt8) {
-        self.red = 31 - min(black, 31)
-        self.green = 31 - min(black, 31)
-        self.blue = 31 - min(black, 31)
-    }
-
-    func asUInt16() -> UInt16 {
-        (UInt16(red) & 0x1F) | (UInt16(green) & 0x1F) << 5 | (UInt16(blue) & 0x1F) << 10
-    }
+    static let allGray: [Color] = [
+        .gray1,
+        .gray2,
+        .gray3,
+        .gray4,
+        .gray5,
+        .gray6,
+        .gray7,
+        .gray8,
+    ]
 }
