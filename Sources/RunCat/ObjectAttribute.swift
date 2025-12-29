@@ -13,7 +13,7 @@ struct ObjectAttribute {
 
     init(x: UInt16, y: UInt16, characterNumber: UInt16, paletteNumber: UInt16) {
         self.attr0 = (y & 0x00FF) | 0x0000
-        self.attr1 = (x & 0x01FF) | 0x0000
+        self.attr1 = (x & 0x01FF) | 0x4000
         self.attr2 = (characterNumber & 0x03FF) | (paletteNumber << 12)
         self.attr3 = 0
     }

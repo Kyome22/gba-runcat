@@ -12,6 +12,13 @@ enum Cat: CaseIterable {
         }
     }
 
+    var number: Int {
+        switch self {
+        case let .running(value): value.rawValue
+        case let .jumping(value): 5 + value.rawValue
+        }
+    }
+
     static let allCases: [Cat] = {
         RunningCat.allCases.map { Cat.running($0) } + JumpingCat.allCases.map { Cat.jumping($0) }
     }()

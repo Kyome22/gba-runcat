@@ -29,16 +29,14 @@ struct SpriteBuilder {
         }
     }
 
-    // 168 (4 * 2 * 15) + (6 * 8)
-
     func initialCatSprites() -> [ObjectAttribute] {
         let catTileSize = Cat.tileSize
         let catOrigin = Cat.origin
         return (0 ..< catTileTotal).map { index in
             let characterNumber = Cat.tileMap[0][Int(index)]
             return ObjectAttribute(
-                x: catOrigin.x + 8 * (index % catTileSize.width),
-                y: catOrigin.y + 8 * (index / catTileSize.width),
+                x: catOrigin.x + 16 * (index % catTileSize.width),
+                y: catOrigin.y + 16 * (index / catTileSize.width),
                 characterNumber: characterNumber,
                 paletteNumber: 0
             )
@@ -53,8 +51,8 @@ struct SpriteBuilder {
             return (0 ..< roadTileTotal).map { index in
                 let characterNumber = roadTileMap[0][Int(index)]
                 return ObjectAttribute(
-                    x: roadOrigin.x + 8 * (index % roadTileSize.width),
-                    y: roadOrigin.y + 8 * (index / roadTileSize.width),
+                    x: roadOrigin.x + 16 * (index % roadTileSize.width),
+                    y: roadOrigin.y + 16 * (index / roadTileSize.width),
                     characterNumber: characterNumber,
                     paletteNumber: 0
                 )

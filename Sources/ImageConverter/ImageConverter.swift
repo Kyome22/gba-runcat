@@ -1,9 +1,9 @@
 import CoreGraphics
 import Foundation
 
-// 240x160 -> 30x20単位
-// 猫は 64x48 = 8*8 x 8*6
-// 地面は 16x32 = 8*2 x 8*4
+// Screen   240x160 = 8*30x8*20 = 16*15x16*10
+// Cat      64x48   = 8*8x8*6   = 16*4x16*3
+// Road     16x32   = 8*2x8*4   = 16*1x16*2
 
 struct ImageConverter {
     var kind: Kind
@@ -15,34 +15,38 @@ struct ImageConverter {
     }
 
     func run() throws {
+        let tileSize = 16
+        let scale = (tileSize * tileSize) / (8 * 8)
         switch kind {
         case .cat:
-            let tileData = Cat.allCases.map { cat in
+            let tileMatrixList: [[[Tile]]] = Cat.allCases.map { cat in
                 let image = cat.image
                 let colors = convertToColors(from: image)
-                return convertToTileData(from: colors, width: image.width, height: image.height)
+                return convertToTileMatrix(colors: colors, width: image.width, tileSize: 16, number: cat.number)
             }
-            let chunk = Cat.RunningCat.frame0.image.width / 8
-            let tileDataSets = convertToTileDataSets(from: tileData, chunk: chunk)
+            let tileSets = convertToTileSets(from: tileMatrixList)
             switch format {
+            case .total:
+                print(tileSets.count * scale)
             case .map:
-                printMap(total: tileData.count, chunk: chunk, tileDataSets: tileDataSets, digit: 3)
+                printMap(total: tileMatrixList.count, chunk: tileMatrixList[0][0].count, tileSets: tileSets, scale: scale, digit: 3)
             case .data:
-                printData(tileDataSets: tileDataSets)
+                printData(tileSets: tileSets)
             }
         case .road:
-            let tileData = Road.allCases.map { road in
+            let tileMatrixList: [[[Tile]]] = Road.allCases.map { road in
                 let image = road.image
                 let colors = convertToColors(from: image)
-                return convertToTileData(from: colors, width: image.width, height: image.height)
+                return convertToTileMatrix(colors: colors, width: image.width, tileSize: 16, number: road.number)
             }
-            let chunk = Road.sprout.image.width / 8
-            let tileDataSets = convertToTileDataSets(from: tileData, chunk: chunk)
+            let tileSets = convertToTileSets(from: tileMatrixList)
             switch format {
+            case .total:
+                print(tileSets.count * scale)
             case .map:
-                printMap(total: tileData.count, chunk: chunk, tileDataSets: tileDataSets, digit: 2)
+                printMap(total: tileMatrixList.count, chunk: tileMatrixList[0][0].count, tileSets: tileSets, scale: scale, digit: 2)
             case .data:
-                printData(tileDataSets: tileDataSets)
+                printData(tileSets: tileSets)
             }
         }
     }
@@ -74,54 +78,76 @@ struct ImageConverter {
         return colors
     }
 
-    private func convertToTileData(from colors: [Color], width: Int, height: Int) -> [UInt32] {
-        let array: [[Color]] = stride(from: .zero, to: height, by: 8).flatMap { baseY in
-            stride(from: .zero, to: width, by: 8).map { baseX in
-                (0 ..< 8).flatMap { y in
-                    (0 ..< 8).map { x in
-                        colors[(baseY + y) * width + (baseX + x)]
+    private func remap(colorMatrix: [[Color]], blockSize: Int) -> [[Color]] {
+        let tileHeight = colorMatrix.count
+        let tileWidth = colorMatrix[0].count
+        let blocksPerRow = tileWidth / blockSize
+        let blocksPerColumn = tileHeight / blockSize
+
+        return (0 ..< blocksPerColumn).flatMap { blockRow in
+            (0 ..< blocksPerRow).flatMap { blockCol in
+                let startY = blockRow * blockSize
+                let startX = blockCol * blockSize
+                let blockColors = (0 ..< blockSize).map { y in
+                    (0 ..< blockSize).map { x in
+                        colorMatrix[startY + y][startX + x]
                     }
                 }
-            }
-        }
-        return array.flatMap { colors in
-            colors.chunked(by: 8).map { colors in
-                colors.reversed().reduce(into: UInt32.zero) { acc, color in
-                    acc = (acc << 4) | UInt32(color.rawValue & 0xF)
-                }
+                return blockColors
             }
         }
     }
 
-    private func convertToTileDataSets(from tileData: [[UInt32]], chunk: Int) -> [TileDataSet] {
-        let original = tileData.map { $0.chunked(by: 8) }
-        let chunkedTileData: [[[TileData]]] = original.enumerated().map { number, frame in
-            frame.chunked(by: chunk).enumerated().map { y, slice in
-                slice.enumerated().map { x, data in
-                    TileData(position: .init(number: number, x: x, y: y), data: data)
-                }
+    private func convertToUInt32Array(colorMatrix: [[Color]]) -> [UInt32] {
+        colorMatrix.map { colors in
+            colors.reversed().reduce(into: UInt32.zero) { acc, color in
+                acc = (acc << 4) | UInt32(color.rawValue & 0xF)
             }
         }
-        var dict = [UUID : TileDataSet]()
-        chunkedTileData.forEach { array1 in
-            array1.forEach { array2 in
-                array2.forEach { array3 in
-                    if let tileDataSet = dict.first(where: { _, value in value.data == array3.data })?.value {
-                        dict[tileDataSet.id]?.positions.append(array3.position)
+    }
+
+    private func convertToTileMatrix(colors: [Color], width: Int, tileSize: Int, number: Int) -> [[Tile]] {
+        let height = colors.count / width
+        let tilesPerRow = width / tileSize
+        let tilesPerColumn = height / tileSize
+
+        return (0 ..< tilesPerColumn).map { tileRow in
+            (0 ..< tilesPerRow).map { tileCol in
+                let startY = tileRow * tileSize
+                let startX = tileCol * tileSize
+                var tileColors = (0 ..< tileSize).map { y in
+                    (0 ..< tileSize).map { x in
+                        colors[(startY + y) * width + (startX + x)]
+                    }
+                }
+                tileColors = remap(colorMatrix: tileColors, blockSize: 8)
+                let data = convertToUInt32Array(colorMatrix: tileColors)
+                return Tile(position: .init(number: number, x: tileCol, y: tileRow), data: data)
+            }
+        }
+    }
+
+    private func convertToTileSets(from tileMatrixList: [[[Tile]]]) -> [TileSet] {
+        var dict = [UUID : TileSet]()
+        tileMatrixList.forEach { tileMatrix in
+            tileMatrix.forEach { tiles in
+                tiles.forEach { tile in
+                    if let tileSet = dict.first(where: { _, value in value.data == tile.data })?.value {
+                        dict[tileSet.id]?.positions.append(tile.position)
                     } else {
-                        let tileDataSet = TileDataSet(data: array3.data, positions: [array3.position])
-                        dict[tileDataSet.id] = tileDataSet
+                        let tileSet = TileSet(data: tile.data, positions: [tile.position])
+                        dict[tileSet.id] = tileSet
                     }
                 }
             }
         }
         return dict.values
-            .map { tileDataSet in
-                let positions = tileDataSet.positions
+            .map { tileSet in
+                let positions = tileSet.positions
                     .sorted { a, b in a.x < b.x }
                     .sorted { a, b in a.y < b.y }
                     .sorted { a, b in a.number < b.number }
-                return TileDataSet(data: tileDataSet.data, positions: positions)
+                return TileSet(data: tileSet.data, positions: positions)
             }
             .sorted { a, b in
                 a.positions.first!.x < b.positions.first!.x
@@ -137,10 +163,10 @@ struct ImageConverter {
             }
     }
 
-    private func convertToPositionWithIndexList(from tileDataSets: [TileDataSet], number: Int) -> [PositionWithIndex] {
-        tileDataSets.enumerated()
-            .flatMap { index, tileDataSet -> [PositionWithIndex] in
-                tileDataSet.positions.map { PositionWithIndex(position: $0, index: index) }
+    private func convertToPositionWithIndexList(from tileSets: [TileSet], number: Int, scale: Int) -> [PositionWithIndex] {
+        tileSets.enumerated()
+            .flatMap { index, tileSet -> [PositionWithIndex] in
+                tileSet.positions.map { PositionWithIndex(position: $0, index: index * scale) }
             }
             .filter { value in
                 value.position.number == number
@@ -153,9 +179,9 @@ struct ImageConverter {
             }
     }
 
-    private func printMap(total: Int, chunk: Int, tileDataSets: [TileDataSet], digit: Int) {
+    private func printMap(total: Int, chunk: Int, tileSets: [TileSet], scale: Int, digit: Int) {
         let content = (0 ..< total).map { number in
-            let positionWithIndexList = convertToPositionWithIndexList(from: tileDataSets, number: number)
+            let positionWithIndexList = convertToPositionWithIndexList(from: tileSets, number: number, scale: scale)
             return positionWithIndexList.chunked(by: chunk).map { value in
                 let str = value.map {
                     String(format: "%-\(digit)d", $0.index).replacingOccurrences(of: " ", with: "_")
@@ -166,11 +192,13 @@ struct ImageConverter {
         print("[\n\(content)\n]")
     }
 
-    private func printData(tileDataSets: [TileDataSet]) {
-        let content = tileDataSets.map { tileDataSet in
-            tileDataSet.data.map { value in
-                String(format: "    0x%08X,", value)
-            }.joined(separator: "\n")
+    private func printData(tileSets: [TileSet]) {
+        let content = tileSets.map { tileSet in
+            tileSet.data.chunked(by: 8).map { value in
+                value.map { value in
+                    String(format: "    0x%08X,", value)
+                }.joined(separator: "\n")
+            }.joined(separator: "\n\n")
         }.joined(separator: "\n\n")
         print("[\n\(content)\n]")
     }
@@ -182,6 +210,7 @@ enum Kind: String {
 }
 
 enum Format: String {
+    case total
     case map
     case data
 }
@@ -192,12 +221,12 @@ struct Position: Hashable {
     var y: Int
 }
 
-struct TileData: Hashable {
+struct Tile: Hashable {
     var position: Position
     var data: [UInt32]
 }
 
-struct TileDataSet: Hashable {
+struct TileSet: Hashable {
     var id = UUID()
     var data: [UInt32]
     var positions: [Position]

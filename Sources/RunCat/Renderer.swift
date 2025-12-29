@@ -8,7 +8,8 @@ struct Renderer {
         let mode = UInt16.zero
         let isEnabledBackground0: UInt16 = 0x0100
         let isEnabledObject: UInt16 = 0x1000
-        let flags = isEnabledBackground0 | isEnabledObject
+        let oneDirectionalMapping: UInt16 = 0x0040
+        let flags = isEnabledBackground0 | isEnabledObject | oneDirectionalMapping
         let displayControl = UnsafeMutablePointer<UInt16>(bitPattern: 0x04000000)!
         displayControl.pointee = (mode & 0x0007) | (flags & 0xFFF8)
 
