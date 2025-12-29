@@ -11,7 +11,7 @@ struct Timer {
         previousValue = .zero
         control.pointee = 0x0002 | 0x0080
 
-        let cpuFrequency: UInt32 = 0x1000000
+        let cpuFrequency: UInt32 = 0x01000000
         let prescalerDivisor: UInt32 = 0x0100
         let timerFrequency = cpuFrequency / prescalerDivisor
         let millisecondsPerSecond: UInt32 = 0x03E8

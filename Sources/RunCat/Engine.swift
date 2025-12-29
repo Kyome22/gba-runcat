@@ -21,7 +21,7 @@ class Engine {
             initialize()
 
         case .timeElapsed:
-            guard judge() else { return }
+            // guard judge() else { return }
             updateRoads()
             updateCat()
 
@@ -71,23 +71,23 @@ class Engine {
             //     speed = max(speed - 0.01, 0.05)
             // }
         }
-        counter = counter > 0 ? counter - 1 : limit - 1
-        // Sprout Chance
-        if counter == 0 {
-            let randomValue = Int.random(in: 0 ..< 27)
-            var subRoads = [Road]()
-            if randomValue.isMultiple(of: 3) { // 1/3
-                subRoads.append(Road.sprout)
-            }
-            if randomValue.isMultiple(of: 9) { // 1/9
-                subRoads.append(Road.sprout)
-            }
-            if randomValue.isMultiple(of: 27) { // 1/27
-                subRoads.append(Road.sprout)
-            }
-            roads.append(contentsOf: subRoads)
-            limit = subRoads.isEmpty ? 5 : 10
-        }
+//        counter = counter > 0 ? counter - 1 : limit - 1
+//        // Sprout Chance
+//        if counter == 0 {
+//            let randomValue = Int.random(in: 0 ..< 27)
+//            var subRoads = [Road]()
+//            if randomValue.isMultiple(of: 3) { // 1/3
+//                subRoads.append(Road.sprout)
+//            }
+//            if randomValue.isMultiple(of: 9) { // 1/9
+//                subRoads.append(Road.sprout)
+//            }
+//            if randomValue.isMultiple(of: 27) { // 1/27
+//                subRoads.append(Road.sprout)
+//            }
+//            roads.append(contentsOf: subRoads)
+//            limit = subRoads.isEmpty ? 5 : 10
+//        }
         if roads.count < 15 {
             roads.append(Road(rawValue: UInt8.random(in: 0 ..< 3))!)
         }

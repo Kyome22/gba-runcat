@@ -56,9 +56,9 @@ struct Renderer {
         pointer.update(from: objectTiles, count: objectTiles.count)
     }
 
-    func update(sprites: [ObjectAttribute], at: Int) {
+    func update(sprites: [ObjectAttribute]) {
         sprites.indices.forEach { index in
-            objectAttributeMemory()[at + index] = sprites[index]
+            objectAttributeMemory()[index] = sprites[index]
         }
     }
 }
