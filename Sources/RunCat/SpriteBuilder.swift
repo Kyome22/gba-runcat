@@ -29,6 +29,8 @@ struct SpriteBuilder {
         }
     }
 
+    // 168 (4 * 2 * 15) + (6 * 8)
+
     func initialCatSprites() -> [ObjectAttribute] {
         let catTileSize = Cat.tileSize
         let catOrigin = Cat.origin
@@ -46,25 +48,25 @@ struct SpriteBuilder {
     func initialRoadSprites() -> [ObjectAttribute] {
         let roadTileMap = offsettedRoadTileMap
         let roadTileSize = Road.tileSize
-        let roadOrigin = Road.origin
-        return (0 ..< roadTileTotal).map { index in
-            let characterNumber = roadTileMap[0][Int(index)]
-            return ObjectAttribute(
-                x: roadOrigin.x + 8 * (index % roadTileSize.width),
-                y: roadOrigin.y + 8 * (index / roadTileSize.width),
-                characterNumber: characterNumber,
-                paletteNumber: 0
-            )
+        return (UInt16.zero ..< 15).flatMap { block in
+            let roadOrigin = Road.origin + Point(x: 16 * block, y: 0)
+            return (0 ..< roadTileTotal).map { index in
+                let characterNumber = roadTileMap[0][Int(index)]
+                return ObjectAttribute(
+                    x: roadOrigin.x + 8 * (index % roadTileSize.width),
+                    y: roadOrigin.y + 8 * (index / roadTileSize.width),
+                    characterNumber: characterNumber,
+                    paletteNumber: 0
+                )
+            }
         }
     }
 
-    func enumeratedCatTileMap(of number: UInt8) -> [(Int, UInt16)] {
-        Cat.tileMap[Int(number)].enumerated().map { ($0, $1) }
+    func catTileMap(of number: UInt8) -> [UInt16] {
+        Cat.tileMap[Int(number)]
     }
 
-    func enumeratedRoadTileMap(of number: UInt8) -> [(Int, UInt16)] {
-        offsettedRoadTileMap[Int(number)].enumerated().map {
-            ($0 + Int(catTileTotal), $1)
-        }
+    func roadTileMap(of number: UInt8) -> [UInt16] {
+        offsettedRoadTileMap[Int(number)]
     }
 }
