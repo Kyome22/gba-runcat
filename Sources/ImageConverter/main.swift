@@ -16,7 +16,7 @@ struct Entrance: ParsableCommand {
 
     @Option(
         name: .shortAndLong,
-        help: "total or map or data"
+        help: "count or map or data"
     )
     var format: String
 
