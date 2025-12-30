@@ -1,12 +1,13 @@
 # gba-runcat
 
-RunCat for GBA
+RunCat Endless Game for GBA (Game Body Advance).
 
 ## Requirements
 
-- Swift: 6.2.3
-- [gba-llvm-devkit](https://github.com/stuij/gba-llvm-devkit): release-v1
-- mGBA: 0.10.5
+- Language: Swift 6.2.3
+- Toolchain: [gba-llvm-devkit](https://github.com/stuij/gba-llvm-devkit) release-v1
+- Target: ARMv4T
+- Emulator: mGBA 0.10.5
 
 ## How to build
 
