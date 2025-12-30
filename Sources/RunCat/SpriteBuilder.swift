@@ -31,7 +31,7 @@ struct SpriteBuilder {
 
     func initialCatSprites() -> [ObjectAttribute] {
         let catTileSize = Cat.tileSize
-        let catOrigin = Cat.origin
+        let catOrigin = Cat.tileOrigin
         return (0 ..< catTileTotal).map { index in
             let characterNumber = Cat.tileMap[0][Int(index)]
             return ObjectAttribute(
@@ -47,7 +47,7 @@ struct SpriteBuilder {
         let roadTileMap = offsettedRoadTileMap
         let roadTileSize = Road.tileSize
         return (UInt16.zero ..< 15).flatMap { block in
-            let roadOrigin = Road.origin + Point(x: 16 * block, y: 0)
+            let roadOrigin = Road.tileOrigin + Point(x: 16 * block, y: 0)
             return (0 ..< roadTileTotal).map { index in
                 let characterNumber = roadTileMap[0][Int(index)]
                 return ObjectAttribute(
