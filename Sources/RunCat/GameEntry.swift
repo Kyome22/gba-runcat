@@ -2,7 +2,7 @@
 struct GameEntry {
     static func main() {
         // var lastKey = Key()
-        let engine = Engine(onGameOver: { _ in })
+        var engine = Engine(onGameOver: { _ in })
         let renderer = Renderer()
         let spriteBuilder = SpriteBuilder()
         var timer = Timer(milliseconds: 100)

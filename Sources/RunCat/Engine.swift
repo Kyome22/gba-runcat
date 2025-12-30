@@ -1,4 +1,4 @@
-class Engine {
+struct Engine {
     static let JUMP_THRESHOLD: UInt8 = 14
 
     private var counter = UInt8.zero
@@ -9,13 +9,13 @@ class Engine {
     var score = UInt8.zero
     var cat = Cat.running(.frame0)
     var roads = [Road]()
-    let onGameOver: (UInt8) -> Void
+    var onGameOver: (UInt8) -> Void
 
     init(onGameOver: @escaping (UInt8) -> Void) {
         self.onGameOver = onGameOver
     }
 
-    func send(_ action: Action) {
+    mutating func send(_ action: Action) {
         switch action {
         case .gameLaunched:
             initialize()
@@ -37,7 +37,7 @@ class Engine {
         }
     }
 
-    private func initialize() {
+    private mutating func initialize() {
         counter = Self.JUMP_THRESHOLD
         isJumpRequested = false
         score = 0
@@ -48,7 +48,7 @@ class Engine {
         }
     }
 
-    private func judge() -> Bool {
+    private mutating func judge() -> Bool {
         guard status == .playing else { return false }
         let sproutIndices = roads.indices.compactMap { index in
             roads[index] == .sprout ? UInt8(exactly: index) : nil
@@ -64,7 +64,7 @@ class Engine {
         }
     }
 
-    private func updateRoads() {
+    private  mutating func updateRoads() {
         if roads.removeFirst() == .sprout {
             score += 1
             // if score.isMultiple(of: 10) {
@@ -93,7 +93,7 @@ class Engine {
         }
     }
 
-    private func updateCat() {
+    private mutating func updateCat() {
         switch cat {
         case .running(.frame4) where isJumpRequested:
             cat = .jumping(.frame0)
