@@ -5,32 +5,33 @@ struct GameEntry {
         var engine = Engine(onGameOver: { _ in })
         let renderer = Renderer()
         let spriteBuilder = SpriteBuilder()
-        var timer = Timer(milliseconds: 100)
+        var frameCounter: UInt16 = 0
+        let frameThreshold: UInt16 = 6
 
         renderer.set(backgroundTiles: spriteBuilder.backgroundTileData)
         renderer.set(objectTiles: spriteBuilder.objectTileData)
 
-        var catSprites = spriteBuilder.initialCatSprites()
+        var catSprite = spriteBuilder.initialCatSprite()
         var roadSprites = spriteBuilder.initialRoadSprites()
-        renderer.update(sprites: catSprites + roadSprites)
+        renderer.update(sprites: [catSprite] + roadSprites)
 
         engine.send(.gameLaunched)
 
         while true {
             renderer.waitForVSync()
 
-            if timer.hasElapsed() {
-                engine.send(.timeElapsed)
+            frameCounter &+= 1
+            if frameCounter >= frameThreshold {
+                frameCounter = 0
+                engine.send(.tickReceived)
 
-                spriteBuilder.catTileMap(of: engine.cat.frameNumber).enumerated().forEach { index, characterNumber in
-                    catSprites[index].characterNumber = characterNumber
-                }
-                engine.roads.enumerated().forEach { block, road in
-                    spriteBuilder.roadTileMap(of: road.frameNumber).enumerated().forEach { index, characterNumber in
-                        roadSprites[2 * block + index].characterNumber = characterNumber
+                catSprite.characterNumber = spriteBuilder.catCharacterNumber(of: engine.cat.frameNumber)
+                spriteBuilder.roadCharacterNumbers(of: engine.roads.map({ $0.frameNumber }))
+                    .enumerated()
+                    .forEach { index, characterNumber in
+                        roadSprites[index].characterNumber = characterNumber
                     }
-                }
-                renderer.update(sprites: catSprites + roadSprites)
+                renderer.update(sprites: [catSprite] + roadSprites)
             }
 
             // let key = Key.poll()
