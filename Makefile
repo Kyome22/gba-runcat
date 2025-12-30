@@ -14,7 +14,8 @@ SWIFT_FLAGS = -wmo \
 	-Xfrontend -disable-stack-protector \
 	-Xfrontend -disable-objc-interop \
 	-lto=llvm-thin
-CFLAGS = -mthumb \
+CFLAGS = -O3 \
+	-mthumb \
 	-mfpu=none \
 	-fno-exceptions \
 	-fno-rtti \
