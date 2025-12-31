@@ -16,20 +16,21 @@ struct SpriteBuilder {
         return Number.tileMap.map { $0 + offset }
     }
 
-    func initialCatSprite() -> ObjectAttribute {
+    func createCatSprite(frameNamber: UInt8) -> ObjectAttribute {
         ObjectAttribute(
             x: Cat.tileOrigin.x,
             y: Cat.tileOrigin.y,
             size: .size64x64,
-            characterNumber: Cat.tileMap[0],
+            characterNumber: Cat.tileMap[Int(frameNamber)],
             paletteNumber: 0
         )
     }
 
-    func initialRoadSprites() -> [ObjectAttribute] {
-        let characterNumber = offsettedRoadTileMap[0]
-        return (UInt16.zero ..< 15).map { index in
-            let roadOrigin = Road.tileOrigin + Point(x: 16 * index, y: 0)
+    func createRoadSprites(frameNumbers: [UInt8]) -> [ObjectAttribute] {
+        let roadTileMap = offsettedRoadTileMap
+        return frameNumbers.indices.map { index in
+            let roadOrigin = Road.tileOrigin + Point(x: 16 * UInt16(index), y: 0)
+            let characterNumber = roadTileMap[Int(frameNumbers[index])]
             return ObjectAttribute(
                 x: roadOrigin.x,
                 y: roadOrigin.y,
@@ -40,10 +41,11 @@ struct SpriteBuilder {
         }
     }
 
-    func initialNumberSprites() -> [ObjectAttribute] {
-        let characterNumber = offsettedNumberTileMap[0]
-        return (UInt16.zero ..< 3).map { index in
-            let numberOrigin = Number.tileOrigin + Point(x: 8 * index, y: 0)
+    func createNumberSprites(frameNumbers: [UInt8]) -> [ObjectAttribute] {
+        let numberTileMap = offsettedNumberTileMap
+        return frameNumbers.indices.map { index in
+            let numberOrigin = Number.tileOrigin + Point(x: 8 * UInt16(index), y: 0)
+            let characterNumber = numberTileMap[Int(frameNumbers[index])]
             return ObjectAttribute(
                 x: numberOrigin.x,
                 y: numberOrigin.y,
@@ -54,15 +56,17 @@ struct SpriteBuilder {
         }
     }
 
-    func catCharacterNumber(of number: UInt8) -> UInt16 {
-        Cat.tileMap[Int(number)]
+    func catCharacterNumber(of frameNumber: UInt8) -> UInt16 {
+        Cat.tileMap[Int(frameNumber)]
     }
 
-    func roadCharacterNumber(of number: UInt8) -> UInt16 {
-        offsettedRoadTileMap[Int(number)]
+    func roadCharacterNumbers(of frameNumbers: [UInt8]) -> [UInt16] {
+        let roadTileMap = offsettedRoadTileMap
+        return frameNumbers.map { roadTileMap[Int($0)] }
     }
 
-    func numberCharacterNumber(of number: UInt8) -> UInt16 {
-        offsettedNumberTileMap[Int(number)]
+    func numberCharacterNumbers(of frameNumbers: [UInt8]) -> [UInt16] {
+        let numberTileMap = offsettedNumberTileMap
+        return frameNumbers.map { numberTileMap[Int($0)] }
     }
 }

@@ -55,14 +55,14 @@ struct Renderer {
         pointer.update(from: objectTiles, count: objectTiles.count)
     }
 
-    func updateSprites(cat: ObjectAttribute, roads: [ObjectAttribute], numbers: [ObjectAttribute]) {
+    func updateSprites(cat: ObjectAttribute, road: [ObjectAttribute], score: [ObjectAttribute]) {
         let oam = objectAttributeMemory()
         oam[0] = cat
-        for index in roads.indices {
-            oam[1 + index] = roads[index]
+        for index in road.indices {
+            oam[1 + index] = road[index]
         }
-        for index in numbers.indices {
-            oam[1 + roads.count + index] = numbers[index]
+        for index in score.indices {
+            oam[1 + road.count + index] = score[index]
         }
     }
 }

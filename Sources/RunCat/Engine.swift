@@ -4,13 +4,20 @@ struct Engine {
     private var counter = UInt8.zero
     private var limit: UInt8 = 5
     private var isJumpRequested = false
+    private var score = UInt16.zero
+    private var roads = [Road](repeating: .sprout, count: 15)
+    private var onGameOver: (UInt8) -> Void
 
-    var status = Status.newGame
-    var score = UInt8.zero
-    var cat = Cat.running(.frame0)
-    var roads = [Road](repeating: .sprout, count: 15)
-    var onGameOver: (UInt8) -> Void
-    var number = UInt16.zero
+    private(set) var status = Status.newGame
+    private(set) var cat = Cat.running(.frame0)
+
+    var roadFrameNumbers: [UInt8] {
+        roads.map { $0.frameNumber }
+    }
+
+    var scoreFrameNumbers: [UInt8] {
+        score.digits(length: 3)
+    }
 
     init(onGameOver: @escaping (UInt8) -> Void) {
         self.onGameOver = onGameOver
@@ -22,10 +29,9 @@ struct Engine {
             initialize()
 
         case .tickReceived:
-//             guard judge() else { return }
+//            guard judge() else { return }
             updateRoads()
             updateCat()
-            number = (number + 1) % 1000
 
         case .keyPressed:
             switch status {
@@ -68,7 +74,7 @@ struct Engine {
 
     private mutating func updateRoads() {
         if roads[0] == .sprout {
-            // score += 1
+            score = min(999, score + 1)
             // if score.isMultiple(of: 10) {
             //     speed = max(speed - 0.01, 0.05)
             // }
