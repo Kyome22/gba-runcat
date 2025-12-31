@@ -1,8 +1,12 @@
 # Claude Code Configuration
 
-## YOU MUST
+## You Must
 
 - Please respond in Japanese.
+
+## You Must Not
+
+- You must not read @Sources/RunCat/Cat+TileData.swift and @Sources/RunCat/Road+TileData.swift. The reason is that the file is huge and would consume too many tokens. The content consists of image data converted into a UInt32 array.
 
 ## Coding Rules
 
