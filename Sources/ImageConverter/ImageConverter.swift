@@ -19,8 +19,7 @@ struct ImageConverter {
         case .cat:
             let tileMatrixList: [[[Tile]]] = Cat.allCases.map { cat in
                 let image = cat.image
-                var colors = convertToColors(from: image)
-                colors = resize(colors: colors, to: CGSize(width: 64, height: 64))
+                let colors = convertToColors(from: image)
                 return convertToTileMatrix(colors: colors, width: image.width)
             }
             switch format {
@@ -34,6 +33,20 @@ struct ImageConverter {
         case .road:
             let tileMatrixList: [[[Tile]]] = Road.allCases.map { road in
                 let image = road.image
+                let colors = convertToColors(from: image)
+                return convertToTileMatrix(colors: colors, width: image.width)
+            }
+            switch format {
+            case .count:
+                printCount(tileMatrixList: tileMatrixList)
+            case .map:
+                printMap(tileMatrixList: tileMatrixList, digit: 2)
+            case .data:
+                printData(tileMatrixList: tileMatrixList)
+            }
+        case .number:
+            let tileMatrixList: [[[Tile]]] = Number.allCases.map { number in
+                let image = number.image
                 let colors = convertToColors(from: image)
                 return convertToTileMatrix(colors: colors, width: image.width)
             }
@@ -148,6 +161,7 @@ struct ImageConverter {
 enum Kind: String {
     case cat
     case road
+    case number
 }
 
 enum Format: String {
