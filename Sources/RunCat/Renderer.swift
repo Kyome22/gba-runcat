@@ -19,12 +19,11 @@ struct Renderer {
         let backgroundPalettes = UnsafeMutablePointer<UInt16>(bitPattern: 0x05000000)!
         backgroundPalettes.update(repeating: 0, count: 1)
         backgroundPalettes[0] = Color.background.rawValue
-        let count = Int(screenSize.width * screenSize.height)
-        backgroundTileMemory().update(repeating: 0x0, count: count)
+        backgroundTileMemory().update(repeating: 0, count: screenSize.area)
 
         let objectPalettes = UnsafeMutablePointer<UInt16>(bitPattern: 0x05000200)!
         objectPalettes.update(repeating: 0, count: 256)
-        Color.allGray.enumerated().forEach { index, color in
+        for (index, color) in Color.allGray.enumerated() {
             objectPalettes[index + 1] = color.rawValue
         }
         objectAttributeMemory().update(repeating: ObjectAttribute(attr0: 0x0200), count: 128)
@@ -56,9 +55,14 @@ struct Renderer {
         pointer.update(from: objectTiles, count: objectTiles.count)
     }
 
-    func update(sprites: [ObjectAttribute]) {
-        sprites.indices.forEach { index in
-            objectAttributeMemory()[index] = sprites[index]
+    func updateSprites(cat: ObjectAttribute, roads: [ObjectAttribute], numbers: [ObjectAttribute]) {
+        let oam = objectAttributeMemory()
+        oam[0] = cat
+        for index in roads.indices {
+            oam[1 + index] = roads[index]
+        }
+        for index in numbers.indices {
+            oam[1 + roads.count + index] = numbers[index]
         }
     }
 }

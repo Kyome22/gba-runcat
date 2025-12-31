@@ -28,6 +28,10 @@ enum Cat {
             Cat.jumping(value.next())
         }
     }
+
+    static let tileOrigin = Point(x: 32, y: 48)
+    static let tileMap: [UInt16] = [0__, 64_, 128, 192, 256, 320, 384, 448, 512, 576, 640, 704, 768, 832, 896]
+    static let tileCount: UInt16 = 960
 }
 
 extension Cat {

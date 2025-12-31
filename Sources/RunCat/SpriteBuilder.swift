@@ -1,27 +1,19 @@
 struct SpriteBuilder {
-    /* It means the same as what follows.
-     [
-         0x00000000,
-         0x00000000,
-         0x00000000,
-         0x00000000,
-         0x00000000,
-         0x00000000,
-         0x00000000,
-         0x00000000,
-     ]
-    */
     var backgroundTileData: [UInt32] {
-        Array(repeating: 0, count: 8)
+        TileData.background
     }
 
     var objectTileData: [UInt32] {
-        Cat.tileData + Road.tileData
+        TileData.cat + TileData.road + TileData.number
     }
 
     private var offsettedRoadTileMap: [UInt16] {
-        let offset = UInt16(Cat.tileData.count / 8)
-        return Road.tileMap.map { $0 + offset }
+        Road.tileMap.map { $0 + Cat.tileCount }
+    }
+
+    private var offsettedNumberTileMap: [UInt16] {
+        let offset = Cat.tileCount + Road.tileCount
+        return Number.tileMap.map { $0 + offset }
     }
 
     func initialCatSprite() -> ObjectAttribute {
@@ -48,12 +40,29 @@ struct SpriteBuilder {
         }
     }
 
+    func initialNumberSprites() -> [ObjectAttribute] {
+        let characterNumber = offsettedNumberTileMap[0]
+        return (UInt16.zero ..< 3).map { index in
+            let numberOrigin = Number.tileOrigin + Point(x: 8 * index, y: 0)
+            return ObjectAttribute(
+                x: numberOrigin.x,
+                y: numberOrigin.y,
+                size: .size8x8,
+                characterNumber: characterNumber,
+                paletteNumber: 0
+            )
+        }
+    }
+
     func catCharacterNumber(of number: UInt8) -> UInt16 {
         Cat.tileMap[Int(number)]
     }
 
-    func roadCharacterNumbers(of numbers: [UInt8]) -> [UInt16] {
-        let roadTileMap = offsettedRoadTileMap
-        return numbers.map { roadTileMap[Int($0)] }
+    func roadCharacterNumber(of number: UInt8) -> UInt16 {
+        offsettedRoadTileMap[Int(number)]
+    }
+
+    func numberCharacterNumber(of number: UInt8) -> UInt16 {
+        offsettedNumberTileMap[Int(number)]
     }
 }

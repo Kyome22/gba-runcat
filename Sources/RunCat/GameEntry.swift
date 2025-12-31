@@ -1,19 +1,18 @@
 @main
 struct GameEntry {
     static func main() {
-        // var lastKey = Key()
         var engine = Engine(onGameOver: { _ in })
         let renderer = Renderer()
         let spriteBuilder = SpriteBuilder()
-        var frameCounter: UInt16 = 0
-        let frameThreshold: UInt16 = 6
+        var frameCounter = UInt16.zero
 
         renderer.set(backgroundTiles: spriteBuilder.backgroundTileData)
         renderer.set(objectTiles: spriteBuilder.objectTileData)
 
         var catSprite = spriteBuilder.initialCatSprite()
         var roadSprites = spriteBuilder.initialRoadSprites()
-        renderer.update(sprites: [catSprite] + roadSprites)
+        var numberSprites = spriteBuilder.initialNumberSprites()
+        renderer.updateSprites(cat: catSprite, roads: roadSprites, numbers: numberSprites)
 
         engine.send(.gameLaunched)
 
@@ -21,17 +20,19 @@ struct GameEntry {
             renderer.waitForVSync()
 
             frameCounter &+= 1
-            if frameCounter >= frameThreshold {
+            if frameCounter >= 6 {
                 frameCounter = 0
                 engine.send(.tickReceived)
 
                 catSprite.characterNumber = spriteBuilder.catCharacterNumber(of: engine.cat.frameNumber)
-                spriteBuilder.roadCharacterNumbers(of: engine.roads.map({ $0.frameNumber }))
-                    .enumerated()
-                    .forEach { index, characterNumber in
-                        roadSprites[index].characterNumber = characterNumber
-                    }
-                renderer.update(sprites: [catSprite] + roadSprites)
+                for (index, road) in engine.roads.enumerated() {
+                    roadSprites[index].characterNumber = spriteBuilder.roadCharacterNumber(of: road.frameNumber)
+                }
+                let numbers = engine.number.digits(length: 3).map { Number(rawValue: $0)! }
+                for (index, number) in numbers.enumerated() {
+                    numberSprites[index].characterNumber = spriteBuilder.numberCharacterNumber(of: number.frameNumber)
+                }
+                renderer.updateSprites(cat: catSprite, roads: roadSprites, numbers: numberSprites)
             }
 
             // let key = Key.poll()
