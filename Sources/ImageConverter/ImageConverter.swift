@@ -1,9 +1,11 @@
 import CoreGraphics
 import Foundation
 
-// Screen   240x160 = 8*30x8*20 = 16*15x16*10
-// Cat      64x48   = 8*8x8*6   = 16*4x16*3
-// Road     16x32   = 8*2x8*4   = 16*1x16*2
+// Screen 240x160 = 8*30x8*20
+// Cat    32x32   = 8*4x8*4
+// Road   8x16    = 8*1x8*2
+// Number 8x8
+// Letter 8x8
 
 struct ImageConverter {
     var kind: Kind
@@ -17,47 +19,13 @@ struct ImageConverter {
     func run() throws {
         switch kind {
         case .cat:
-            let tileMatrixList: [[[Tile]]] = Cat.allCases.map { cat in
-                let image = cat.image
-                let colors = convertToColors(from: image)
-                return convertToTileMatrix(colors: colors, width: image.width)
-            }
-            switch format {
-            case .count:
-                printCount(tileMatrixList: tileMatrixList)
-            case .map:
-                printMap(tileMatrixList: tileMatrixList, digit: 3)
-            case .data:
-                printData(tileMatrixList: tileMatrixList)
-            }
+            printInfo(resources: Cat.allCases, digit: 3)
         case .road:
-            let tileMatrixList: [[[Tile]]] = Road.allCases.map { road in
-                let image = road.image
-                let colors = convertToColors(from: image)
-                return convertToTileMatrix(colors: colors, width: image.width)
-            }
-            switch format {
-            case .count:
-                printCount(tileMatrixList: tileMatrixList)
-            case .map:
-                printMap(tileMatrixList: tileMatrixList, digit: 1)
-            case .data:
-                printData(tileMatrixList: tileMatrixList)
-            }
+            printInfo(resources: Road.allCases, digit: 1)
         case .number:
-            let tileMatrixList: [[[Tile]]] = Number.allCases.map { number in
-                let image = number.image
-                let colors = convertToColors(from: image)
-                return convertToTileMatrix(colors: colors, width: image.width)
-            }
-            switch format {
-            case .count:
-                printCount(tileMatrixList: tileMatrixList)
-            case .map:
-                printMap(tileMatrixList: tileMatrixList, digit: 1)
-            case .data:
-                printData(tileMatrixList: tileMatrixList)
-            }
+            printInfo(resources: Number.allCases, digit: 1)
+        case .letter:
+            printInfo(resources: Letter.allCases, digit: 2)
         }
     }
 
@@ -156,12 +124,29 @@ struct ImageConverter {
         }.joined(separator: "\n\n")
         print("[\n\(content)\n]")
     }
+
+    private func printInfo(resources: [any Printable], digit: Int) {
+        let tileMatrixList: [[[Tile]]] = resources.map { resource in
+            let image = resource.image
+            let colors = convertToColors(from: image)
+            return convertToTileMatrix(colors: colors, width: image.width)
+        }
+        switch format {
+        case .count:
+            printCount(tileMatrixList: tileMatrixList)
+        case .map:
+            printMap(tileMatrixList: tileMatrixList, digit: digit)
+        case .data:
+            printData(tileMatrixList: tileMatrixList)
+        }
+    }
 }
 
 enum Kind: String {
     case cat
     case road
     case number
+    case letter
 }
 
 enum Format: String {

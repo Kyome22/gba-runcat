@@ -1,7 +1,7 @@
 import CoreGraphics
 import Foundation
 
-enum Number: Int, CaseIterable {
+enum Number: Int, Printable {
     case d0
     case d1
     case d2

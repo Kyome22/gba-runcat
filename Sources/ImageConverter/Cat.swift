@@ -1,7 +1,7 @@
 import CoreGraphics
 import Foundation
 
-enum Cat: CaseIterable {
+enum Cat: Printable {
     case running(RunningCat)
     case jumping(JumpingCat)
 
@@ -25,7 +25,7 @@ enum Cat: CaseIterable {
 }
 
 extension Cat {
-    enum RunningCat: Int, CaseIterable {
+    enum RunningCat: Int, Printable {
         case frame0
         case frame1
         case frame2
@@ -39,7 +39,7 @@ extension Cat {
 }
 
 extension Cat {
-    enum JumpingCat: Int, CaseIterable {
+    enum JumpingCat: Int, Printable {
         case frame0
         case frame1
         case frame2

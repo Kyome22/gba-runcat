@@ -10,7 +10,7 @@ struct Entrance: ParsableCommand {
 
     @Option(
         name: .shortAndLong,
-        help: "cat or road or number"
+        help: "cat or road or number or letter"
     )
     var kind: String
 
