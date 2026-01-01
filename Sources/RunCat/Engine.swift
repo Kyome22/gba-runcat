@@ -56,6 +56,7 @@ struct Engine {
         counter = Self.JUMP_THRESHOLD
         isJumpRequested = false
         score = 0
+        speed = .gear0
         cat = .running(.frame0)
         for index in roads.indices {
             guard roads[index] == .sprout else { continue }
