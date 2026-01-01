@@ -20,7 +20,7 @@ struct SpriteBuilder {
         ObjectAttribute(
             x: Cat.tileOrigin.x,
             y: Cat.tileOrigin.y,
-            size: .size64x64,
+            size: .size32x32,
             characterNumber: Cat.tileMap[Int(frameNamber)],
             paletteNumber: 0
         )
@@ -29,12 +29,12 @@ struct SpriteBuilder {
     func createRoadSprites(frameNumbers: [UInt8]) -> [ObjectAttribute] {
         let roadTileMap = offsettedRoadTileMap
         return frameNumbers.indices.map { index in
-            let roadOrigin = Road.tileOrigin + Point(x: 16 * UInt16(index), y: 0)
+            let roadOrigin = Road.tileOrigin + Point(x: 8 * UInt16(index), y: 0)
             let characterNumber = roadTileMap[Int(frameNumbers[index])]
             return ObjectAttribute(
                 x: roadOrigin.x,
                 y: roadOrigin.y,
-                size: .size16x32,
+                size: .size8x16,
                 characterNumber: characterNumber,
                 paletteNumber: 0
             )
