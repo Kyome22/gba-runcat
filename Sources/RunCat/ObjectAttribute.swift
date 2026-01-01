@@ -11,8 +11,8 @@ struct ObjectAttribute {
         self.attr3 = attr3
     }
 
-    init(x: UInt16, y: UInt16, size: ObjectSize, characterNumber: UInt16, paletteNumber: UInt16) {
-        self.attr0 = (y & 0x00FF) | size.attr0
+    init(x: UInt16, y: UInt16, size: ObjectSize, characterNumber: UInt16, paletteNumber: UInt16, visibility: Bool = true) {
+        self.attr0 = (y & 0x00FF) | size.attr0 | (visibility ? 0 : 0x0200)
         self.attr1 = (x & 0x01FF) | size.attr1
         self.attr2 = (characterNumber & 0x03FF) | (paletteNumber << 12)
         self.attr3 = 0
@@ -36,5 +36,13 @@ struct ObjectAttribute {
     var paletteNumber: UInt16 {
         get { attr2 >> 12 }
         set { attr2 = (attr2 & 0x0FFF) | (newValue << 12) }
+    }
+
+    mutating func set(visibility: Bool) {
+        if visibility {
+            attr0 &= ~0x0200
+        } else {
+            attr0 |= 0x0200
+        }
     }
 }

@@ -24,7 +24,17 @@ struct GameEntry {
             origin: .init(x: 208, y: 8),
             frameNumbers: engine.scoreFrameNumbers
         )
-        renderer.updateSprites(cat: catSprite, road: roadSprites, score: scoreSprites)
+        var sentenceSprites: [[ObjectAttribute]] = [
+            spriteBuilder.createSentenceSprite(sentence: .auto, visibility: engine.isAutoPlay),
+            spriteBuilder.createSentenceSprite(sentence: .gameOver, visibility: engine.status == .gameOver),
+            spriteBuilder.createSentenceSprite(sentence: .pressAToPlay, visibility: engine.status != .playing),
+        ]
+        renderer.updateSprites(
+            cat: catSprite,
+            road: roadSprites,
+            score: scoreSprites,
+            sentence: sentenceSprites.flatMap { $0 }
+        )
 
         while true {
             renderer.waitForVSync()
@@ -34,6 +44,15 @@ struct GameEntry {
                 engine.send(.aKeyPressed)
             } else if key == [.select, .start], lastKey != [.select, .start] {
                 engine.send(.selectAndStartKeysPressed)
+                for index in sentenceSprites[0].indices {
+                    sentenceSprites[0][index].set(visibility: engine.isAutoPlay)
+                }
+                renderer.updateSprites(
+                    cat: catSprite,
+                    road: roadSprites,
+                    score: scoreSprites,
+                    sentence: sentenceSprites.flatMap { $0 }
+                )
             }
             lastKey = key
 
@@ -50,7 +69,18 @@ struct GameEntry {
                     for (index, characterNumber) in spriteBuilder.numberCharacterNumbers(of: engine.scoreFrameNumbers).enumerated() {
                         scoreSprites[index].characterNumber = characterNumber
                     }
-                    renderer.updateSprites(cat: catSprite, road: roadSprites, score: scoreSprites)
+                    for index in sentenceSprites[1].indices {
+                        sentenceSprites[1][index].set(visibility: engine.status == .gameOver)
+                    }
+                    for index in sentenceSprites[2].indices {
+                        sentenceSprites[2][index].set(visibility: engine.status != .playing)
+                    }
+                    renderer.updateSprites(
+                        cat: catSprite,
+                        road: roadSprites,
+                        score: scoreSprites,
+                        sentence: sentenceSprites.flatMap { $0 }
+                    )
                 }
             }
         }

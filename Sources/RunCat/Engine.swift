@@ -7,10 +7,10 @@ struct Engine {
     private var sproutStock: UInt8 = 0
     private var score = UInt16.zero
     private var roads = [Road](repeating: .sprout, count: 30)
-    private var isAutoPlay = false
 
     private(set) var status = Status.newGame
     private(set) var speed = Speed.gear0
+    private(set) var isAutoPlay = false
     private(set) var cat = Cat.running(.frame0)
 
     var roadFrameNumbers: [UInt8] {
