@@ -16,24 +16,24 @@ struct SpriteBuilder {
         return Number.tileMap.map { $0 + offset }
     }
 
-    func createCatSprite(frameNamber: UInt8) -> ObjectAttribute {
+    func createCatSprite(origin: Point, frameNamber: UInt8) -> ObjectAttribute {
         ObjectAttribute(
-            x: Cat.tileOrigin.x,
-            y: Cat.tileOrigin.y,
+            x: origin.x,
+            y: origin.y,
             size: .size32x32,
             characterNumber: Cat.tileMap[Int(frameNamber)],
             paletteNumber: 0
         )
     }
 
-    func createRoadSprites(frameNumbers: [UInt8]) -> [ObjectAttribute] {
+    func createRoadSprites(origin: Point, frameNumbers: [UInt8]) -> [ObjectAttribute] {
         let roadTileMap = offsettedRoadTileMap
         return frameNumbers.indices.map { index in
-            let roadOrigin = Road.tileOrigin + Point(x: 8 * UInt16(index), y: 0)
+            let offsettedOrigin = origin + Point(x: 8 * UInt16(index), y: 0)
             let characterNumber = roadTileMap[Int(frameNumbers[index])]
             return ObjectAttribute(
-                x: roadOrigin.x,
-                y: roadOrigin.y,
+                x: offsettedOrigin.x,
+                y: offsettedOrigin.y,
                 size: .size8x16,
                 characterNumber: characterNumber,
                 paletteNumber: 0
@@ -41,14 +41,14 @@ struct SpriteBuilder {
         }
     }
 
-    func createNumberSprites(frameNumbers: [UInt8]) -> [ObjectAttribute] {
+    func createNumberSprites(origin: Point, frameNumbers: [UInt8]) -> [ObjectAttribute] {
         let numberTileMap = offsettedNumberTileMap
         return frameNumbers.indices.map { index in
-            let numberOrigin = Number.tileOrigin + Point(x: 8 * UInt16(index), y: 0)
+            let offsettedOrigin = origin + Point(x: 8 * UInt16(index), y: 0)
             let characterNumber = numberTileMap[Int(frameNumbers[index])]
             return ObjectAttribute(
-                x: numberOrigin.x,
-                y: numberOrigin.y,
+                x: offsettedOrigin.x,
+                y: offsettedOrigin.y,
                 size: .size8x8,
                 characterNumber: characterNumber,
                 paletteNumber: 0

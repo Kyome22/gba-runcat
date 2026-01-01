@@ -1,5 +1,5 @@
 struct Engine {
-    static let JUMP_THRESHOLD: UInt8 = 27
+    static let JUMP_THRESHOLD: UInt8 = 17
 
     private var counter = UInt8.zero
     private var limit: UInt8 = 5
@@ -7,6 +7,7 @@ struct Engine {
     private var sproutStock: UInt8 = 0
     private var score = UInt16.zero
     private var roads = [Road](repeating: .sprout, count: 30)
+    private var isAutoPlay = false
 
     private(set) var status = Status.newGame
     private(set) var cat = Cat.running(.frame0)
@@ -30,16 +31,23 @@ struct Engine {
             guard judge() else { return }
             updateRoads()
             updateCat()
+            autoJump()
 
-        case .keyPressed:
+        case .aKeyPressed:
             switch status {
             case .newGame, .gameOver:
                 initialize()
                 status = .playing
 
-            case .playing:
+            case .playing where !isAutoPlay:
                 isJumpRequested = true
+
+            default:
+                break
             }
+
+        case .selectAndStartKeysPressed:
+            isAutoPlay.toggle()
         }
     }
 
@@ -116,9 +124,16 @@ struct Engine {
         }
     }
 
+    private mutating func autoJump() {
+        if isAutoPlay, roads[Int(Self.JUMP_THRESHOLD - 1)] == .sprout {
+            isJumpRequested = true
+        }
+    }
+
     enum Action {
         case gameLaunched
         case tickReceived
-        case keyPressed
+        case aKeyPressed
+        case selectAndStartKeysPressed
     }
 }

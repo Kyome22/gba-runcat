@@ -29,7 +29,6 @@ enum Cat {
         }
     }
 
-    static let tileOrigin = Point(x: 32, y: 80)
     static let tileMap: [UInt16] = [0__, 16_, 32_, 48_, 64_, 80_, 96_, 112, 128, 144, 160, 176, 192, 208, 224]
     static let tileCount: UInt16 = 240
 }

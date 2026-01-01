@@ -1,4 +1,5 @@
 enum TileData {
+    // MARK: Background
     // It means the same as what follows.
     // [
     //     0x00000000,
@@ -12,6 +13,7 @@ enum TileData {
     // ]
     static let background = [UInt32](repeating: 0, count: 8)
 
+    // MARK: Cat
     static let cat: [UInt32] = [
         0x00000000,
         0x00000000,
@@ -2174,6 +2176,7 @@ enum TileData {
         0x00000000,
     ]
 
+    // MARK: Road
     static let road: [UInt32] = [
         0x00000000,
         0x00000000,
@@ -2248,6 +2251,7 @@ enum TileData {
         0x00000000,
     ]
 
+    // MARK: Number
     static let number: [UInt32] = [
         0x00000000,
         0x00777770,

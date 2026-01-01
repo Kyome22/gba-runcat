@@ -40,7 +40,7 @@ struct ImageConverter {
             case .count:
                 printCount(tileMatrixList: tileMatrixList)
             case .map:
-                printMap(tileMatrixList: tileMatrixList, digit: 2)
+                printMap(tileMatrixList: tileMatrixList, digit: 1)
             case .data:
                 printData(tileMatrixList: tileMatrixList)
             }
@@ -54,7 +54,7 @@ struct ImageConverter {
             case .count:
                 printCount(tileMatrixList: tileMatrixList)
             case .map:
-                printMap(tileMatrixList: tileMatrixList, digit: 2)
+                printMap(tileMatrixList: tileMatrixList, digit: 1)
             case .data:
                 printData(tileMatrixList: tileMatrixList)
             }

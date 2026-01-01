@@ -8,7 +8,6 @@ enum Road: UInt8 {
         rawValue
     }
 
-    static let tileOrigin = Point(x: 0, y: 104)
     static let tileMap: [UInt16] = [0, 2, 4, 6]
     static let tileCount: UInt16 = 8
 }

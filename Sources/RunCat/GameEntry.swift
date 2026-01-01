@@ -12,17 +12,28 @@ struct GameEntry {
 
         engine.send(.gameLaunched)
 
-        var catSprite = spriteBuilder.createCatSprite(frameNamber: engine.cat.frameNumber)
-        var roadSprites = spriteBuilder.createRoadSprites(frameNumbers: engine.roadFrameNumbers)
-        var scoreSprites = spriteBuilder.createNumberSprites(frameNumbers: engine.scoreFrameNumbers)
+        var catSprite = spriteBuilder.createCatSprite(
+            origin: .init(x: 32, y: 80),
+            frameNamber: engine.cat.frameNumber
+        )
+        var roadSprites = spriteBuilder.createRoadSprites(
+            origin: .init(x: 0, y: 104),
+            frameNumbers: engine.roadFrameNumbers
+        )
+        var scoreSprites = spriteBuilder.createNumberSprites(
+            origin: .init(x: 208, y: 8),
+            frameNumbers: engine.scoreFrameNumbers
+        )
         renderer.updateSprites(cat: catSprite, road: roadSprites, score: scoreSprites)
 
         while true {
             renderer.waitForVSync()
 
             let key = Key.poll()
-            if key.contains(.a), !lastKey.contains(.a) {
-                engine.send(.keyPressed)
+            if key == .a, !lastKey.isPressingAnyKey {
+                engine.send(.aKeyPressed)
+            } else if key == [.select, .start], lastKey != [.select, .start] {
+                engine.send(.selectAndStartKeysPressed)
             }
             lastKey = key
 
