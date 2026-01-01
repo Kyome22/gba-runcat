@@ -1,4 +1,4 @@
-enum Sentence {
+enum Sentence: Int {
     case auto
     case gameOver
     case pressAToPlay

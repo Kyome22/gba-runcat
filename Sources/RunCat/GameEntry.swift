@@ -44,8 +44,8 @@ struct GameEntry {
                 engine.send(.aKeyPressed)
             } else if key == [.select, .start], lastKey != [.select, .start] {
                 engine.send(.selectAndStartKeysPressed)
-                for index in sentenceSprites[0].indices {
-                    sentenceSprites[0][index].set(visibility: engine.isAutoPlay)
+                for index in sentenceSprites[Sentence.auto.rawValue].indices {
+                    sentenceSprites[Sentence.auto.rawValue][index].set(visibility: engine.isAutoPlay)
                 }
                 renderer.updateSprites(
                     cat: catSprite,
@@ -69,11 +69,11 @@ struct GameEntry {
                     for (index, characterNumber) in spriteBuilder.numberCharacterNumbers(of: engine.scoreFrameNumbers).enumerated() {
                         scoreSprites[index].characterNumber = characterNumber
                     }
-                    for index in sentenceSprites[1].indices {
-                        sentenceSprites[1][index].set(visibility: engine.status == .gameOver)
+                    for index in sentenceSprites[Sentence.gameOver.rawValue].indices {
+                        sentenceSprites[Sentence.gameOver.rawValue][index].set(visibility: engine.status == .gameOver)
                     }
-                    for index in sentenceSprites[2].indices {
-                        sentenceSprites[2][index].set(visibility: engine.status != .playing)
+                    for index in sentenceSprites[Sentence.pressAToPlay.rawValue].indices {
+                        sentenceSprites[Sentence.pressAToPlay.rawValue][index].set(visibility: engine.status != .playing)
                     }
                     renderer.updateSprites(
                         cat: catSprite,
