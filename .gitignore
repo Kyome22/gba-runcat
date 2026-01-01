@@ -1,9 +1,12 @@
 .DS_Store
 .swiftpm
 .build
+.claude
 
 *.elf
 *.gba
 *.o
 *.sav
 *.bc
+
+PSD/
