@@ -34,7 +34,7 @@ struct Engine {
             updateCat()
             autoJump()
 
-        case .aKeyPressed:
+        case .aButtonPressed:
             switch status {
             case .newGame, .gameOver:
                 initialize()
@@ -47,7 +47,7 @@ struct Engine {
                 break
             }
 
-        case .selectAndStartKeysPressed:
+        case .selectAndStartButtonsPressed:
             isAutoPlay.toggle()
         }
     }
@@ -134,7 +134,7 @@ struct Engine {
     enum Action {
         case gameLaunched
         case tickReceived
-        case aKeyPressed
-        case selectAndStartKeysPressed
+        case aButtonPressed
+        case selectAndStartButtonsPressed
     }
 }

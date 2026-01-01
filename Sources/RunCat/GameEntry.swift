@@ -2,7 +2,7 @@
 struct GameEntry {
     static func main() {
         var frameCounter = UInt16.zero
-        var lastKey = Key()
+        var lastButton = Button()
         var engine = Engine()
         let renderer = Renderer()
         let spriteBuilder = SpriteBuilder()
@@ -39,11 +39,11 @@ struct GameEntry {
         while true {
             renderer.waitForVSync()
 
-            let key = Key.poll()
-            if key == .a, !lastKey.isPressingAnyKey {
-                engine.send(.aKeyPressed)
-            } else if key == [.select, .start], lastKey != [.select, .start] {
-                engine.send(.selectAndStartKeysPressed)
+            let button = Button.poll()
+            if button == .a, !lastButton.isPressingAnyButton {
+                engine.send(.aButtonPressed)
+            } else if button == [.select, .start], lastButton != [.select, .start] {
+                engine.send(.selectAndStartButtonsPressed)
                 for index in sentenceSprites[Sentence.auto.rawValue].indices {
                     sentenceSprites[Sentence.auto.rawValue][index].set(visibility: engine.isAutoPlay)
                 }
@@ -54,7 +54,7 @@ struct GameEntry {
                     sentence: sentenceSprites.flatMap { $0 }
                 )
             }
-            lastKey = key
+            lastButton = button
 
             if engine.status == .playing {
                 frameCounter &+= 1
