@@ -10,6 +10,7 @@ struct Engine {
     private var isAutoPlay = false
 
     private(set) var status = Status.newGame
+    private(set) var speed = Speed.gear0
     private(set) var cat = Cat.running(.frame0)
 
     var roadFrameNumbers: [UInt8] {
@@ -81,9 +82,9 @@ struct Engine {
     private mutating func updateRoads() {
         if roads[0] == .sprout {
             score = min(999, score + 1)
-            // if score.isMultiple(of: 10) {
-            //     speed = max(speed - 0.01, 0.05)
-            // }
+             if score.isMultiple(of: 10) {
+                 speed = speed.next()
+             }
         }
         counter = counter > 0 ? counter - 1 : limit - 1
         // Sprout Chance

@@ -1,11 +1,11 @@
 @main
 struct GameEntry {
     static func main() {
+        var frameCounter = UInt16.zero
         var lastKey = Key()
         var engine = Engine()
         let renderer = Renderer()
         let spriteBuilder = SpriteBuilder()
-        var frameCounter = UInt16.zero
 
         renderer.set(backgroundTiles: spriteBuilder.backgroundTileData)
         renderer.set(objectTiles: spriteBuilder.objectTileData)
@@ -39,7 +39,7 @@ struct GameEntry {
 
             if engine.status == .playing {
                 frameCounter &+= 1
-                if frameCounter >= 6 {
+                if frameCounter >= engine.speed.rawValue {
                     frameCounter = 0
                     engine.send(.tickReceived)
 
