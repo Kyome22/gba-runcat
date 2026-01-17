@@ -1,6 +1,6 @@
-# RunCat for GBA
+# RunCat endless game for GBA
 
-RunCat Endless Game for GBA (Game Body Advance). This project is written by Embedded Swift.
+RunCat endless game for GBA (Game Body Advance). This project is written by Embedded Swift.
 
 <img src="https://github.com/user-attachments/assets/81b04c75-4564-4e5b-8844-1fa72d9a2d03" width="480" />
 
