@@ -1,5 +1,6 @@
 enum Sentence: Int {
     case auto
+    case score
     case gameOver
     case pressAToPlay
 
@@ -7,6 +8,8 @@ enum Sentence: Int {
         switch self {
         case .auto:
             [.a, .u, .t, .o]
+        case .score:
+            [.s, .c, .o, .r, .e, .colon]
         case .gameOver:
             [.g, .a, .m, .e, .space, .o, .v, .e, .r]
         case .pressAToPlay:
@@ -22,6 +25,8 @@ enum Sentence: Int {
         switch self {
         case .auto:
             Point(x: 8, y: 8)
+        case .score:
+            Point(x: 172, y: 8)
         case .gameOver:
             Point(x: 93, y: 32)
         case .pressAToPlay:

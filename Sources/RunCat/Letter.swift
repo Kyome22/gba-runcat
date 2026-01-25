@@ -1,6 +1,7 @@
 enum Letter: UInt8 {
     case space
     case period
+    case colon
     case a
     case b
     case c
@@ -28,6 +29,6 @@ enum Letter: UInt8 {
     case y
     case z
 
-    static let tileMap: [UInt16] = (0 ..< 28).map { $0 }
-    static let tileCount: UInt16 = 28
+    static let tileMap: [UInt16] = (0 ..< 29).map { $0 }
+    static let tileCount: UInt16 = 29
 }

@@ -28,6 +28,7 @@ struct GameEntry {
         )
         var sentenceSprites: [[ObjectAttribute]] = [
             spriteBuilder.createSentenceSprite(sentence: .auto, visibility: engine.isAutoPlay),
+            spriteBuilder.createSentenceSprite(sentence: .score, visibility: true),
             spriteBuilder.createSentenceSprite(sentence: .gameOver, visibility: engine.status == .gameOver),
             spriteBuilder.createSentenceSprite(sentence: .pressAToPlay, visibility: engine.status != .playing),
         ]
