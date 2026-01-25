@@ -13,6 +13,8 @@ struct Engine {
     private(set) var isAutoPlay = false
     private(set) var cat = Cat.running(.frame0)
 
+    var onSoundEffect: ((SoundEffect) -> Void)?
+
     var roadFrameNumbers: [UInt8] {
         roads.map { $0.frameNumber }
     }
@@ -29,7 +31,10 @@ struct Engine {
             initialize()
 
         case .tickReceived:
-            guard judge() else { return }
+            guard judge() else {
+                onSoundEffect?(.hit)
+                return
+            }
             updateRoads()
             updateCat()
             autoJump()
@@ -123,6 +128,9 @@ struct Engine {
             cat = .running(.frame0)
         default:
             cat = cat.next()
+            if case .jumping(.frame5) = cat {
+                onSoundEffect?(.jump)
+            }
         }
     }
 

@@ -2,10 +2,12 @@
 struct GameEntry {
     static func main() {
         var frameCounter = UInt16.zero
+        var audioFrameCounter = UInt16.zero
         var lastButton = Button()
         var engine = Engine()
         let renderer = Renderer()
         let spriteBuilder = SpriteBuilder()
+        let audio = Audio()
 
         renderer.set(backgroundTiles: spriteBuilder.backgroundTileData)
         renderer.set(objectTiles: spriteBuilder.objectTileData)
@@ -35,9 +37,19 @@ struct GameEntry {
             score: scoreSprites,
             sentence: sentenceSprites.flatMap { $0 }
         )
+        engine.onSoundEffect = {
+            audioFrameCounter = audio.play(soundEffect: $0)
+        }
 
         while true {
             renderer.waitForVSync()
+
+            if audioFrameCounter > 0 {
+                audioFrameCounter -= 1
+                if audioFrameCounter == 0 {
+                    audio.stop()
+                }
+            }
 
             let button = Button.poll()
             if button == .a, !lastButton.isPressingAnyButton {
