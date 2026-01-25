@@ -17,8 +17,16 @@ RunCat endless game for GBA (Game Body Advance). This project is written by Embe
 make
 ```
 
-## How to run on the emulator.
+## How to run on the emulator
 
 ```sh
 make run
 ```
+
+## Play on actual GBA hardware
+
+You can play on a real GBA by flashing the RunCat.gba file to a cartridge ([product of InsideGadgets](https://shop.insidegadgets.com/product/gba-4mb-rom-only-flash-cart/)) using [Lesserkuma/FlashGBX](https://github.com/Lesserkuma/FlashGBX).
+
+<img src="https://github.com/user-attachments/assets/fc9e77b6-1f11-4681-b447-55a5d2dfc622" width="400" />
+
+<img src="https://github.com/user-attachments/assets/533db86d-1402-4a0c-aba8-968728c2f3a6" width="400" />
