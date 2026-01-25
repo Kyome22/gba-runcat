@@ -15,6 +15,10 @@ let package = Package(
         .executable(
             name: "ic",
             targets: ["ImageConverter"]
+        ),
+        .executable(
+            name: "sc",
+            targets: ["SoundConverter"]
         )
     ],
     dependencies: [
@@ -34,6 +38,15 @@ let package = Package(
             ],
             resources: [
                 .process("Resources"),
+            ],
+            swiftSettings: [
+                .enableUpcomingFeature("ExistentialAny"),
+            ]
+        ),
+        .executableTarget(
+            name: "SoundConverter",
+            dependencies: [
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ],
             swiftSettings: [
                 .enableUpcomingFeature("ExistentialAny"),
